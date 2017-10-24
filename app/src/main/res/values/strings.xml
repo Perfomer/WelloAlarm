@@ -1,0 +1,75 @@
+<resources>
+    <string name="app_name">WelloAlarm</string>
+    <string name="wello">wello</string>
+    <string name="alarm">alarm</string>
+    <string name="alarm_settings">Новый будильник</string>
+    <string name="login">Авторизация</string>
+    <string name="email">Электронная почта</string>
+    <string name="password">Пароль</string>
+
+    <string name="action_login">Авторизоваться</string>
+
+    <string name="stn_changetime">Изменить время</string>
+    <string name="stn_chooseweek">Выберите неделю</string>
+    <string name="stn_chooseday">Выберите расписание</string>
+    <string name="stn_today">Сегодня</string>
+    <string name="stn_now">Сейчас</string>
+    <string name="stn_week">неделя</string>
+    <string name="stn_confirmation_txt">Вы действительно хотите выйти без сохранения?</string>
+    <string name="stn_confirmation">Подтверждение</string>
+    <string name="stn_save_alarm">Сохранить</string>
+    <string name="stn_quit_without_saving">Выйти</string>
+
+    <string name="stn_note_once">Чтобы будильник сработал единожды, не выбирайте дни недели.</string>
+    <string name="stn_note_noweek">Если не выбрать неделю, то будильник будет срабатывать каждую неделю.</string>
+
+    <string name="stn_create">Сохранить</string>
+    <string name="stn_cancel">Отменить</string>
+
+    <string name="mon">пн</string>
+    <string name="tue">вт</string>
+    <string name="wed">ср</string>
+    <string name="thu">чт</string>
+    <string name="fri">пт</string>
+    <string name="sat">сб</string>
+    <string name="sun">вс</string>
+
+    <string name="monday">понедельник</string>
+    <string name="tuesday">вторник</string>
+    <string name="wednesday">среда</string>
+    <string name="thursday">четверг</string>
+    <string name="friday">пятница</string>
+    <string name="saturday">суббота</string>
+    <string name="sunday">воскресенье</string>
+
+    <string name="once">Один раз</string>
+    <string name="everyday">Ежедневно</string>
+    <string name="weekends">По выходным</string>
+    <string name="weekdays">По будням</string>
+
+    <string name="ev">чётн</string>
+    <string name="od">нечётн</string>
+
+    <string name="even">чётная</string>
+    <string name="odd">нечётная</string>
+    <string name="everyweek">Каждую неделю</string>
+
+    <string name="log_in">Войти</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="welcome">Добро пожаловать в WelloAlarm!</string>
+    <string name="alarm_turnoff">Отключить</string>
+    <string name="alarm_setaside">Отложить на 5 минут</string>
+    <string name="off">выкл.</string>
+    <string name="on">вкл.</string>
+    <string name="edit">Редактировать</string>
+    <string name="delete">Удалить</string>
+    <string name="no_alarms">Здесь ещё нет будильников.\nНо что, если их добавить?</string>
+    <string name="not_found">[day not found]</string>
+    <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+</resources>
