@@ -14,7 +14,7 @@
     <color name="dark_gray">#191919</color>
     <color name="gray">#6c6c6c</color>
     <color name="light_gray">#A1A1A1</color>
-    <color name="colorPrimary">#2CD1BB</color>
+    <color name="colorPrimary">#2cd1bb</color>
     <color name="colorPrimaryDark">#11a894</color>
     <color name="colorAccent">#17b83d</color>
 </resources>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WelloAlarm</string>
+    <string name="app_name">Wello Alarm</string>
     <string name="wello">wello</string>
     <string name="alarm">alarm</string>
     <string name="alarm_settings">Новый будильник</string>
@@ -71,5 +71,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="cancel">Cancel</string>
 
 </resources>
