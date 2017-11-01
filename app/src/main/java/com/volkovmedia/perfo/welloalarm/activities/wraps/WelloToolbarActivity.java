@@ -1,19 +1,17 @@
 package com.volkovmedia.perfo.welloalarm.activities.wraps;
 
-import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.volkovmedia.perfo.welloalarm.R;
-import com.volkovmedia.perfo.welloalarm.activities.mvp.impl.MvpView;
 
-@SuppressLint("Registered")
-public class WelloToolbarActivity extends AppCompatActivity {
+public abstract class WelloToolbarActivity extends AppCompatActivity {
 
     private TextView mActivityName;
     private View mApplicationIcon;
@@ -33,6 +31,16 @@ public class WelloToolbarActivity extends AppCompatActivity {
         arrowBack.setVisibility(View.VISIBLE);
 
         arrowBack.setOnClickListener(view -> onBackPressed());
+    }
+
+    protected void setToolbarText(String text) {
+        if (TextUtils.isEmpty(text)) {
+            switchHeader(true);
+        }
+        else {
+            mActivityName.setText(text);
+            switchHeader(false);
+        }
     }
 
     private void initHeader() {

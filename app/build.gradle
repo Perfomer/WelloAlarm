@@ -29,7 +29,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    //Testing Libraries
     testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    compile 'com.facebook.stetho:stetho:1.5.0'
 
     //Android Libraries
     compile "com.android.support:appcompat-v7:$support"
@@ -39,4 +42,14 @@ dependencies {
     compile "com.android.support:cardview-v7:$support"
     compile "com.android.support:recyclerview-v7:$support"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    //UI Libraries
+    compile 'com.stone.vega.library:VegaLayoutManager:1.0.2'
+    compile 'moe.feng:MaterialStepperView:0.2.2'
+    compile 'com.robinhood.ticker:ticker:1.2.0'
+
+    //Architecture Libraries
+    compile "com.google.dagger:dagger:$dagger"
+    compile "com.google.dagger:dagger-android-support:$dagger"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger"
 }

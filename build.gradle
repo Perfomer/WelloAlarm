@@ -17,8 +17,10 @@ allprojects {
     repositories {
         jcenter()
         google()
+        maven { url 'https://jitpack.io' }
     }
     ext.support = '26.1.0'
+    ext.dagger = '2.12'
 
 }
 

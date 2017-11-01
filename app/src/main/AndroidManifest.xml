@@ -2,22 +2,40 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.volkovmedia.perfo.welloalarm">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
+        android:name=".general.WelloApplication"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activities.mvp.ext.alarms.AlarmsActivity">
+        <activity android:name=".activities.mvp.implementation.alarms.AlarmsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.mvp.ext.settings.SettingsActivity"
-            android:label="New alarm" />
+        <activity
+            android:name=".activities.mvp.implementation.settings.SettingsActivity"
+            android:label="@string/edit"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity android:name=".activities.mvp.implementation.alert.AlertActivity"/>
+
+        <receiver android:name=".logic.services.AlarmBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".logic.services.AlarmService" />
 
     </application>
 

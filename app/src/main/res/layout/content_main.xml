@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.mvp.ext.alarms.AlarmsActivity"
+    tools:context=".activities.mvp.implementation.alarms.AlarmsActivity"
     tools:showIn="@layout/activity_alarms">
 
     <android.support.v7.widget.RecyclerView

@@ -1,4 +1,4 @@
-package com.volkovmedia.perfo.welloalarm.activities.mvp.ext.settings;
+package com.volkovmedia.perfo.welloalarm.activities.mvp.implementation.settings;
 
 import android.os.AsyncTask;
 

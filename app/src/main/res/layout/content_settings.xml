@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/separator"
+            android:dividerPadding="3dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:showDividers="middle">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/alarmstn_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Имя будильника"
+                    android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp">
+
+                <com.robinhood.ticker.TickerView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/alarmstn_time"
+                    style="@style/TimeStyle"
+                    android:gravity="start"
+                    android:onClick="onChangeTimeClick"
+                    android:text="0:00"
+                    app:ticker_animationDuration="@integer/animspeed_long" />
+
+                <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:onClick="onChangeTimeClick"
+                    android:text="@string/stn_changetime" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/choose_day"
+                    style="@style/SettingsHeader"
+                    android:text="@string/stn_chooseday" />
+
+                <TextView
+                    android:id="@+id/alarmstn_day"
+                    style="@style/SettingsHeaderDescription"
+                    android:layout_alignBottom="@id/choose_day"
+                    android:text="Сегодня понедельник" />
+
+                <GridLayout
+                    android:id="@+id/alarmstn_days"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/choose_day"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:columnCount="5"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/DayView"
+                        android:tag="1"
+                        android:text="@string/mon" />
+
+                    <TextView
+                        style="@style/DayView"
+                        android:tag="2"
+                        android:text="@string/tue" />
+
+                    <TextView
+                        style="@style/DayView"
+                        android:tag="3"
+                        android:text="@string/wed" />
+
+                    <TextView
+                        style="@style/DayView"
+                        android:tag="4"
+                        android:text="@string/thu" />
+
+                    <TextView
+                        style="@style/DayView"
+                        android:tag="5"
+                        android:text="@string/fri" />
+
+                    <TextView
+                        style="@style/DayView"
+                        android:tag="6"
+                        android:text="@string/sat" />
+
+                    <TextView
+                        style="@style/DayView"
+                        android:tag="7"
+                        android:text="@string/sun" />
+                </GridLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/SettingsDescription"
+                    android:layout_below="@id/alarmstn_days"
+                    android:text="@string/stn_note_once" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/choose_week"
+                    style="@style/SettingsHeader"
+                    android:text="@string/stn_chooseweek" />
+
+                <TextView
+                    android:id="@+id/alarmact_week"
+                    style="@style/SettingsHeaderDescription"
+                    android:layout_alignBottom="@id/choose_week"
+                    android:text="Сейчас чётная неделя" />
+
+                <GridLayout
+                    android:id="@+id/alarmstn_weeks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/choose_week"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        style="@style/WeekView"
+                        android:tag="even"
+                        android:text="@string/ev" />
+
+                    <TextView
+                        style="@style/WeekView"
+                        android:tag="odd"
+                        android:text="@string/od" />
+
+                </GridLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/SettingsDescription"
+                    android:layout_below="@id/alarmstn_weeks"
+                    android:text="@string/stn_note_noweek" />
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <android.support.v7.widget.AppCompatButton
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDeclineButtonClick"
+            android:text="@string/stn_cancel"
+            android:textColor="@color/colorAccent" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/colorPrimary"
+            android:onClick="onAcceptButtonClick"
+            android:text="@string/stn_create"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+</LinearLayout>

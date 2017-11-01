@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@drawable/toolbar_bg">
+
+    <RelativeLayout
+        android:id="@+id/wello_actbar_arrowback"
+        android:layout_width="48dp"
+        android:layout_height="0dp"
+        android:foreground="?selectableItemBackground"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/ic_arrow_back" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/wello_actbar_iconbutton"
+        android:layout_width="48dp"
+        android:layout_height="0dp"
+        android:foreground="?selectableItemBackground"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/ic_arrow_back" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/wello_actbar_activityname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:text="WelloAlarm"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/wello_actbar_logo"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo_mini" />
+
+</android.support.constraint.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 
 import com.volkovmedia.perfo.welloalarm.R;
 import com.volkovmedia.perfo.welloalarm.general.UniqueList;
@@ -33,15 +34,22 @@ public class AlarmsAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
     @Override
     public void onBindViewHolder(final AlarmViewHolder viewHolder, int position) {
         final Alarm currentAlarm = mAlarms.get(position);
-        View rootView = viewHolder.getClickableView();
+        View rootView = viewHolder.getRootView();
+        Switch switchView = viewHolder.getSwitch();
 
-        PopupMenu menu = createPopup(currentAlarm, rootView);
+        PopupMenu menu = createPopup(currentAlarm, switchView);
         rootView.setOnLongClickListener(view -> {
             menu.show();
             return false;
         });
 
         rootView.setOnClickListener(view -> mCallback.editAlarm(currentAlarm));
+        switchView.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (currentAlarm.isEnabled() != b) {
+                currentAlarm.setEnabled(b);
+                mCallback.switchAlarm(currentAlarm);
+            }
+        });
 
         viewHolder.setData(currentAlarm);
     }
@@ -78,5 +86,6 @@ public class AlarmsAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
     public interface Callback {
         void deleteAlarm(Alarm alarm);
         void editAlarm(Alarm alarm);
+        void switchAlarm(Alarm alarm);
     }
 }

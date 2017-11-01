@@ -22,7 +22,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
                 "\t`" + DBConstants.FIELD_ALARM_MINUTES + "`\tINTEGER NOT NULL,\n" +
                 "\t`" + DBConstants.FIELD_ALARM_NAME + "`\tTEXT,\n" +
                 "\t`" + DBConstants.FIELD_ALARM_SOUND + "`\tTEXT,\n" +
-                "\t`" + DBConstants.FIELD_ALARM_ENABLED + "`\tINTEGER,\n" +
+                "\t`" + DBConstants.FIELD_ALARM_ENABLED + "`\tINTEGER NOT NULL,\n" +
                 "\t`" + DBConstants.FIELD_ALARM_VIBRATE + "`\tINTEGER\n" +
                 ");");
 

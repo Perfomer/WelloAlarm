@@ -1,7 +1,11 @@
 package com.volkovmedia.perfo.welloalarm.general;
 
+import com.volkovmedia.perfo.welloalarm.objects.Alarm;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+
+import static com.volkovmedia.perfo.welloalarm.logic.TimeManager.getClosestTimeDifference;
 
 public class GeneralMethods {
 
@@ -25,4 +29,14 @@ public class GeneralMethods {
             if (item) count++;
         return count;
     }
+
+    public static boolean hasEnabledAlarms(UniqueList<Alarm> alarms) {
+        for (int i = 0; i < alarms.size(); i++) {
+            if (alarms.get(i).isEnabled()) return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isAlarmDisposable(Alarm alarm) { return getTrueItemsCount(alarm.getDays()) == 0;}
 }

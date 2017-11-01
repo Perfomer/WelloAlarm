@@ -42,8 +42,6 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="TimeStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">48sp</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
@@ -80,7 +78,6 @@
     </style>
 
     <style name="WeekViewMini" parent="DayViewMini">
-        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:layout_width">64dp</item>
     </style>
 
@@ -99,8 +96,6 @@
     </style>
 
     <style name="SettingsDescription">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@android:color/darker_gray</item>

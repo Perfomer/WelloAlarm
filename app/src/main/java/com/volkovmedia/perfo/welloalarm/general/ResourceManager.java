@@ -11,6 +11,7 @@ import static com.volkovmedia.perfo.welloalarm.general.Constants.DAY_SUNDAY;
 import static com.volkovmedia.perfo.welloalarm.general.Constants.DAY_THURSDAY;
 import static com.volkovmedia.perfo.welloalarm.general.Constants.DAY_TUESDAY;
 import static com.volkovmedia.perfo.welloalarm.general.Constants.DAY_WEDNESDAY;
+import static com.volkovmedia.perfo.welloalarm.logic.TimeManager.isWeekEven;
 
 public class ResourceManager {
 
@@ -33,6 +34,11 @@ public class ResourceManager {
             default:
                 return res.getString(R.string.not_found);
         }
+    }
+
+
+    public static String getWeekName(Resources res, int week) {
+        return isWeekEven(week) ? res.getString(R.string.even) : res.getString(R.string.odd);
     }
 
 }

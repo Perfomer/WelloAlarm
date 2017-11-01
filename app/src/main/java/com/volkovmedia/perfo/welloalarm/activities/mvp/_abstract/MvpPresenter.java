@@ -1,4 +1,4 @@
-package com.volkovmedia.perfo.welloalarm.activities.mvp.impl;
+package com.volkovmedia.perfo.welloalarm.activities.mvp._abstract;
 
 public interface MvpPresenter {
 

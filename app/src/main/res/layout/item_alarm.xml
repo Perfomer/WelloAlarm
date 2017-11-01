@@ -1,76 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
-    android:orientation="vertical"
-    app:cardBackgroundColor="@color/dark_gray"
-    app:cardCornerRadius="3dp"
-    app:cardElevation="4dp">
+    android:layout_height="wrap_content">
 
-    <android.support.constraint.ConstraintLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp">
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:foreground="?selectableItemBackground"
+        android:orientation="vertical"
+        app:cardBackgroundColor="@color/dark_gray"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="4dp">
 
-        <TextView
-            android:id="@+id/i_alarm_name"
-            android:layout_width="wrap_content"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="Popopopopololololo"
-            android:textColor="@color/gray"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/i_alarm_switch"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:padding="20dp">
 
-        <TextView
-            android:id="@+id/i_alarm_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="TextView"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="20sp"
-            app:layout_constraintLeft_toLeftOf="@+id/i_alarm_name"
-            app:layout_constraintTop_toBottomOf="@+id/i_alarm_name" />
+            <TextView
+                android:id="@+id/i_alarm_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/gray"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/i_alarm_switch"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Popopopopololololo" />
 
-        <Switch
-            android:id="@+id/i_alarm_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/i_alarm_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="32sp"
+                app:layout_constraintLeft_toLeftOf="@+id/i_alarm_name"
+                app:layout_constraintTop_toBottomOf="@+id/i_alarm_name"
+                tools:text="TextView" />
 
-        <GridLayout
-            android:id="@+id/i_alarm_weeks"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="@+id/i_alarm_time"
-            app:layout_constraintRight_toRightOf="@+id/i_alarm_switch"
-            app:layout_constraintTop_toBottomOf="@+id/i_alarm_time" />
-
-        <GridLayout
-            android:id="@+id/i_alarm_days"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="@+id/i_alarm_time"
-            app:layout_constraintRight_toRightOf="@+id/i_alarm_switch"
-            app:layout_constraintTop_toBottomOf="@+id/i_alarm_weeks" />
-
-    </android.support.constraint.ConstraintLayout>
+            <Switch
+                android:id="@+id/i_alarm_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-</android.support.v7.widget.CardView>
+            <GridLayout
+                android:id="@+id/i_alarm_days"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:columnCount="5"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="@+id/i_alarm_time"
+                app:layout_constraintRight_toRightOf="@+id/i_alarm_switch"
+                app:layout_constraintTop_toBottomOf="@+id/i_alarm_time">
+
+                <TextView
+                    style="@style/DayViewMini"
+                    android:text="@string/mon" />
+
+                <TextView
+                    style="@style/DayViewMini"
+                    android:text="@string/mon" />
+
+                <TextView
+                    style="@style/DayViewMini"
+                    android:text="@string/mon" />
+
+                <TextView
+                    style="@style/DayViewMini"
+                    android:text="@string/mon" />
+
+                <TextView
+                    style="@style/DayViewMini"
+                    android:text="@string/mon" />
+
+                <TextView
+                    style="@style/DayViewMini"
+                    android:text="@string/mon" />
+
+                <TextView
+                    style="@style/DayViewMini"
+                    android:text="@string/mon" />
+
+                <TextView
+                    style="@style/DayViewMini"
+                    android:text="@string/mon" />
+
+                <TextView
+                    style="@style/DayViewMini"
+                    android:text="@string/mon" />
+
+            </GridLayout>
+
+            <GridLayout
+                android:id="@+id/i_alarm_weeks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="@+id/i_alarm_time"
+                app:layout_constraintRight_toRightOf="@+id/i_alarm_switch"
+                app:layout_constraintTop_toBottomOf="@+id/i_alarm_days">
+
+                <TextView
+                    style="@style/DayViewMini"
+                    android:text="@string/mon" />
+
+                <TextView
+                    style="@style/WeekViewMini"
+                    android:text="@string/mon" />
+            </GridLayout>
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+</FrameLayout>

@@ -23,4 +23,8 @@ public final class Constants {
             DAY_SATURDAY = 6,
             DAY_SUNDAY = 7;
 
+    public static final int
+            WEEK_ODD = 0,
+            WEEK_EVEN = 1;
+
 }

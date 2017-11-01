@@ -63,10 +63,18 @@ public class AlarmDatabaseHelper {
     }
 
     public UniqueList<Alarm> readAlarms() {
+        return readAlarmsWithCondition(null, null);
+    }
+
+    public Alarm readAlarm(int id) {
+        return readAlarmsWithCondition(FIELD_ID + " = ?", new String[]{String.valueOf(id)}).get(0);
+    }
+
+    private UniqueList<Alarm> readAlarmsWithCondition(String query, String[] args) {
         SQLiteDatabase database = mDatabaseHelper.getReadableDatabase();
         UniqueList<Alarm> alarms = new UniqueList<>();
 
-        Cursor cursor = database.query(TABLE_ALARMS, null, null, null, null, null, null);
+        Cursor cursor = database.query(TABLE_ALARMS, null, query, args, null, null, null);
 
         if (cursor.moveToFirst()) {
             do {
@@ -84,7 +92,7 @@ public class AlarmDatabaseHelper {
                         daysMap = readIntegerArray(database, id, TABLE_DAYS);
 
                 boolean[] weeks = castToBooleanArray(weeksMap, WEEKS_TYPES),
-                days = castToBooleanArray(daysMap, DAYS_TYPES);
+                        days = castToBooleanArray(daysMap, DAYS_TYPES);
 
                 Alarm alarm = new Alarm(id, hours, minutes, name, sound, enabled, vibrate, weeks, days);
                 alarms.add(alarm);

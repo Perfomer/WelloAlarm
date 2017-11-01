@@ -1,8 +1,10 @@
 package com.volkovmedia.perfo.welloalarm.views.adapters.viewholders;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
+import android.support.annotation.StyleRes;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
@@ -37,25 +39,68 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         mSwitch = itemView.findViewById(R.id.i_alarm_switch);
     }
 
-    public View getClickableView() {
+    public void setData(Alarm data) {
+        String name = data.getName();
+
+        mTime.setText(getTimeText(data.getHours(), data.getMinutes()));
+        mSwitch.setChecked(data.isEnabled());
+
+        if (TextUtils.isEmpty(name)) mName.setVisibility(View.GONE);
+        else mName.setText(data.getName());
+
+        initGridLayouts(data);
+    }
+
+    public View getRootView() {
         return mRootView;
     }
 
-    public void setData(Alarm data) {
-        mTime.setText(getTimeText(data.getMinutes(), data.getHours()));
-        mName.setText(data.getName());
-        mSwitch.setChecked(data.isEnabled());
-
-        initGridViews(data);
+    public Switch getSwitch() {
+        return mSwitch;
     }
 
-    private static void addViewToGrid(GridLayout grid, View view) {
-        GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-        lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        lp.setMargins(0, 0, 6, 0);
+    private void initGridLayouts(Alarm alarm) {
+        boolean[] days = alarm.getDays();
+        int daysCount = getTrueItemsCount(days);
+        fillDaysGridLayout(days, getTrueItemsCount(days));
 
-        grid.addView(view, lp);
+        if (daysCount != 0) {
+            fillWeeksGridLayout(alarm.getWeeks());
+        } else mWeeks.setVisibility(View.GONE);
+    }
+
+    private void fillDaysGridLayout(boolean[] days, int trueItemsCount) {
+        mDays.removeAllViews();
+        ContextThemeWrapper contextThemeWrapper = createContextThemeWrapper(R.style.DayViewMini);
+
+        switch (trueItemsCount) {
+            case 0:
+                addViewToGrid(mDays, getReadyDateView(contextThemeWrapper, R.string.once));
+                break;
+            case 7:
+                addViewToGrid(mDays, getReadyDateView(contextThemeWrapper, R.string.everyday));
+                break;
+            default:
+                for (int i = 0; i < days.length; i++) {
+                    if (days[i]) {
+                        String text = getDayName(mRootView.getContext().getResources(), i + 1, false);
+                        addViewToGrid(mDays, getReadyDateView(contextThemeWrapper, text));
+                    }
+                }
+        }
+    }
+
+    private void fillWeeksGridLayout(boolean[] weeks) {
+        mWeeks.removeAllViews();
+        ContextThemeWrapper contextThemeWrapper = createContextThemeWrapper(R.style.WeekViewMini);
+
+        if (weeks[0]) {
+            addViewToGrid(mWeeks, getReadyDateView(contextThemeWrapper, R.string.ev));
+        }
+
+        if (weeks[1]) {
+            addViewToGrid(mWeeks, getReadyDateView(contextThemeWrapper, R.string.od));
+        }
     }
 
     private TextView getReadyDateView(ContextThemeWrapper ctw, int textId) {
@@ -68,41 +113,19 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         return week;
     }
 
-    private void initGridViews(Alarm alarm) {
-        Context context = mRootView.getContext();
-        ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(context, R.style.DayViewMini);
+    private static void addViewToGrid(GridLayout grid, View view) {
+        GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+        lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.setMargins(0, 0, 6, 0);
 
-        boolean[] days = alarm.getDays();
-        int daysCount = getTrueItemsCount(days);
-
-        switch (daysCount) {
-            case 0:
-                addViewToGrid(mDays, getReadyDateView(contextThemeWrapper, R.string.once));
-                break;
-            case 7:
-                addViewToGrid(mDays, getReadyDateView(contextThemeWrapper, R.string.everyday));
-                break;
-            default:
-                for (int i = 0; i < days.length; i++) {
-                    if (days[i]) {
-                        String text = getDayName(context.getResources(), i + 1, false);
-                        addViewToGrid(mDays, getReadyDateView(contextThemeWrapper, text));
-                    }
-                }
-        }
-
-        if (daysCount != 0) {
-            boolean[] weeks = alarm.getWeeks();
-
-            contextThemeWrapper = new ContextThemeWrapper(context, R.style.WeekViewMini);
-
-            if (weeks[0]) {
-                addViewToGrid(mWeeks, getReadyDateView(contextThemeWrapper, R.string.ev));
-            }
-
-            if (weeks[1]) {
-                addViewToGrid(mWeeks, getReadyDateView(contextThemeWrapper, R.string.od));
-            }
-        }
+        grid.addView(view, lp);
     }
+
+
+    @SuppressLint("RestrictedApi")
+    private ContextThemeWrapper createContextThemeWrapper(@StyleRes int styleId) {
+        return new ContextThemeWrapper(mRootView.getContext(), styleId);
+    }
+
 }
