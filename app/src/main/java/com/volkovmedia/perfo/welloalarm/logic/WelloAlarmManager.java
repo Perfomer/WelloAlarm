@@ -9,24 +9,31 @@ import android.widget.Toast;
 
 import com.volkovmedia.perfo.welloalarm.database.PreferencesManager;
 import com.volkovmedia.perfo.welloalarm.general.UniqueList;
+import com.volkovmedia.perfo.welloalarm.general.WelloApplication;
 import com.volkovmedia.perfo.welloalarm.logic.services.AlarmBroadcastReceiver;
 import com.volkovmedia.perfo.welloalarm.objects.Alarm;
+
+import javax.inject.Inject;
 
 import static com.volkovmedia.perfo.welloalarm.general.GeneralMethods.hasEnabledAlarms;
 import static com.volkovmedia.perfo.welloalarm.logic.TimeManager.getClosestTimeDifference;
 import static com.volkovmedia.perfo.welloalarm.objects.Alarm.KEY_ALARM;
 
 public class WelloAlarmManager {
-
+    //TODO Think about removing current alarm id from SharedPreferences
     private AlarmManager mAlarmManager;
-    private Context mContext;
 
-    private PreferencesManager mPreferencesManager;
+    @Inject
+    Context mContext;
 
-    public WelloAlarmManager(Context context) {
-        this.mContext = context;
-        this.mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        this.mPreferencesManager = new PreferencesManager(context);
+    @Inject
+    PreferencesManager mPreferencesManager;
+
+    private PendingIntent mPendingIntent;
+
+    public WelloAlarmManager() {
+        WelloApplication.getComponent().inject(this);
+        this.mAlarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
     }
 
     private void setCurrentAlarm(Alarm alarm) {
@@ -36,8 +43,11 @@ public class WelloAlarmManager {
 
         long timeDifference = getClosestTimeDifference(alarm);
         long time = System.currentTimeMillis() + timeDifference;
+//        long time = System.currentTimeMillis() + 100; //TODO remove debug line
 
-        mAlarmManager.set(AlarmManager.RTC_WAKEUP, time, createPendingIntent(alarm));
+        mPendingIntent = createPendingIntent(alarm, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mAlarmManager.set(AlarmManager.RTC_WAKEUP, time, mPendingIntent);
 
         Toast.makeText(
                 mContext,
@@ -47,25 +57,29 @@ public class WelloAlarmManager {
 
     }
 
-    public void scheduleNearestAlarm(UniqueList<Alarm> alarms) {
-        int currentAlarmId = mPreferencesManager.getCurrentAlarmIdentifier();
-        cancelAlarm(alarms.getByKey(currentAlarmId));
+    public boolean scheduleNearestAlarm(UniqueList<Alarm> alarms) {
+        if (!hasEnabledAlarms(alarms)) return false;
 
-        if (hasEnabledAlarms(alarms)) {
-            setCurrentAlarm(findNearestAlarm(alarms));
-        }
+        int currentAlarmId = mPreferencesManager.getCurrentAlarmIdentifier();
+
+        //cancelAlarm(alarms.getByKey(currentAlarmId));
+        setCurrentAlarm(findNearestAlarm(alarms));
+
+        return true;
     }
 
     private void cancelAlarm(Alarm alarm) {
-        mAlarmManager.cancel(createPendingIntent(alarm));
+        if (alarm != null)
+            mAlarmManager.cancel(createPendingIntent(alarm, PendingIntent.FLAG_CANCEL_CURRENT));
     }
 
-    private PendingIntent createPendingIntent(@NonNull Alarm alarm) {
+    private PendingIntent createPendingIntent(@NonNull Alarm alarm, int flag) {
         Intent intent = new Intent(mContext, AlarmBroadcastReceiver.class);
 
         intent.putExtra(KEY_ALARM, alarm);
-        intent.putExtra("NAME", 1010120012);
+        intent.putExtra("NAME", 10101);
 
+        //TODO Play with Pending Intent flags.
         return PendingIntent.getBroadcast(mContext, alarm.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

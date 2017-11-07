@@ -3,6 +3,7 @@ package com.volkovmedia.perfo.welloalarm.views.adapters.viewholders;
 import android.annotation.SuppressLint;
 import android.support.annotation.StyleRes;
 import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,29 +15,37 @@ import android.widget.TextView;
 import com.volkovmedia.perfo.welloalarm.R;
 import com.volkovmedia.perfo.welloalarm.objects.Alarm;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.volkovmedia.perfo.welloalarm.general.GeneralMethods.getTrueItemsCount;
 import static com.volkovmedia.perfo.welloalarm.general.GeneralMethods.getTimeText;
 import static com.volkovmedia.perfo.welloalarm.general.ResourceManager.getDayName;
 
 public class AlarmViewHolder extends RecyclerView.ViewHolder {
 
-    private TextView mTime, mName;
-    private GridLayout mDays, mWeeks;
-    private Switch mSwitch;
+    @BindView(R.id.i_alarm_time)
+    TextView mTime;
+
+    @BindView(R.id.i_alarm_name)
+    TextView mName;
+
+    @BindView(R.id.i_alarm_days)
+    GridLayout mDays;
+
+    @BindView(R.id.i_alarm_weeks)
+    GridLayout mWeeks;
+
+    @BindView(R.id.i_alarm_switch)
+    Switch mSwitch;
+
     private View mRootView;
+    private PopupMenu mPopupMenu;
 
     public AlarmViewHolder(View itemView) {
         super(itemView);
-
+        ButterKnife.bind(this, itemView);
         mRootView = itemView;
-
-        mTime = itemView.findViewById(R.id.i_alarm_time);
-        mName = itemView.findViewById(R.id.i_alarm_name);
-
-        mDays = itemView.findViewById(R.id.i_alarm_days);
-        mWeeks = itemView.findViewById(R.id.i_alarm_weeks);
-
-        mSwitch = itemView.findViewById(R.id.i_alarm_switch);
     }
 
     public void setData(Alarm data) {
@@ -57,6 +66,20 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
 
     public Switch getSwitch() {
         return mSwitch;
+    }
+
+    public PopupMenu getPopupMenu() {
+        if (mPopupMenu != null) return mPopupMenu;
+        else return initPopup();
+    }
+
+    private PopupMenu initPopup() {
+        ContextThemeWrapper wrapper = createContextThemeWrapper(R.style.MyPopupMenu);
+
+        mPopupMenu = new PopupMenu(wrapper, mSwitch);
+        mPopupMenu.inflate(R.menu.menu_alarm);
+
+        return mPopupMenu;
     }
 
     private void initGridLayouts(Alarm alarm) {

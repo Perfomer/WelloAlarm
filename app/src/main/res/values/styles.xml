@@ -12,6 +12,8 @@
         <item name="actionBarStyle">@style/AppTheme.ActionBar.Transparent</item>
         <item name="android:actionBarStyle">@style/AppTheme.ActionBar.Transparent</item>
         <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:fontFamily">@font/bender</item>
+
         <!-- Support library compatibility -->
         <!--<item name="actionBarStyle">@style/AppTheme.ActionBar.Transparent</item>-->
         <item name="windowActionBarOverlay">true</item>
@@ -26,6 +28,11 @@
     <style name="AppTheme.ActionBar" parent="AppTheme">
         <item name="windowActionBarOverlay">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>
+    </style>
+
+    <style name="MyPopupMenu" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:popupBackground">@color/dark_gray</item>
+        <item name="android:disabledAlpha">0.5</item>
     </style>
 
     <style name="CardView" parent="Base.Widget.AppCompat.Button.Borderless">

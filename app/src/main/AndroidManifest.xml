@@ -29,11 +29,13 @@
 
         <activity android:name=".activities.mvp.implementation.alert.AlertActivity"/>
 
-        <receiver android:name=".logic.services.AlarmBroadcastReceiver">
+        <receiver android:name=".logic.services.BootAlarmReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".logic.services.AlarmBroadcastReceiver" />
 
         <service android:name=".logic.services.AlarmService" />
 

@@ -21,7 +21,7 @@ allprojects {
     }
     ext.support = '26.1.0'
     ext.dagger = '2.12'
-
+    ext.butterknife = '8.8.1'
 }
 
 task clean(type: Delete) {

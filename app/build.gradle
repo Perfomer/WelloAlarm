@@ -52,4 +52,6 @@ dependencies {
     compile "com.google.dagger:dagger:$dagger"
     compile "com.google.dagger:dagger-android-support:$dagger"
     annotationProcessor "com.google.dagger:dagger-compiler:$dagger"
+    compile "com.jakewharton:butterknife:$butterknife"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknife"
 }

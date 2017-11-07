@@ -6,6 +6,8 @@ import com.volkovmedia.perfo.welloalarm.database.AlarmDatabaseHelper;
 import com.volkovmedia.perfo.welloalarm.general.UniqueList;
 import com.volkovmedia.perfo.welloalarm.objects.DataContainer;
 
+import javax.inject.Inject;
+
 public abstract class DatabaseTask<Source extends DataContainer, Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
 
     private final DatabaseTaskCallback<Result> mCallback;

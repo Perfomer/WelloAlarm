@@ -12,34 +12,35 @@ import android.view.View;
 import com.volkovmedia.perfo.welloalarm.R;
 import com.volkovmedia.perfo.welloalarm.activities.mvp.implementation.settings.SettingsActivity;
 import com.volkovmedia.perfo.welloalarm.activities.wraps.WelloToolbarActivity;
-import com.volkovmedia.perfo.welloalarm.database.AlarmDatabaseHelper;
 import com.volkovmedia.perfo.welloalarm.general.UniqueList;
+import com.volkovmedia.perfo.welloalarm.general.WelloApplication;
 import com.volkovmedia.perfo.welloalarm.objects.Alarm;
-import com.volkovmedia.perfo.welloalarm.views.WelloLayoutManager;
 import com.volkovmedia.perfo.welloalarm.views.adapters.AlarmsAdapter;
 
-public class AlarmsActivity extends WelloToolbarActivity implements AlarmsViewContract {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class AlarmsActivity extends WelloToolbarActivity implements AlarmsContract.View {
 
     private static final int RQ_NEW_ALARM = 101, RQ_EDIT_ALARM = 102;
 
-    private AlarmsPresenter mPresenter;
+    private AlarmsContract.Presenter mPresenter;
 
-    private RecyclerView mAlarmsRecyclerView;
-    private View mNoAlarmsLayout;
+    @BindView(R.id.act_main_recyclerview)
+    RecyclerView mAlarmsRecyclerView;
 
-    private boolean noAlarmsViewVisible = true;
+    @BindView(R.id.act_main_noalarms)
+    View mNoAlarmsLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarms);
 
-        AlarmsModel model = new AlarmsModel(new AlarmDatabaseHelper(this));
-        mPresenter = new AlarmsPresenter(model);
-        mPresenter.attachView(this);
+        ButterKnife.bind(this);
 
-        mAlarmsRecyclerView = findViewById(R.id.act_main_recyclerview);
-        mNoAlarmsLayout = findViewById(R.id.act_main_noalarms);
+        mPresenter = WelloApplication.getComponent().getAlarmsPresenter();
+        mPresenter.attachView(this);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> startSettingsActivity(null));
@@ -47,7 +48,7 @@ public class AlarmsActivity extends WelloToolbarActivity implements AlarmsViewCo
         mAlarmsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        mAlarmsRecyclerView.setLayoutManager(new WelloLayoutManager(this));
         mAlarmsRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAlarmsRecyclerView.setAdapter(new AlarmsAdapter(this, new AlarmsAdapter.Callback() {
+        mAlarmsRecyclerView.setAdapter(new AlarmsAdapter(new AlarmsAdapter.Callback() {
             @Override
             public void deleteAlarm(Alarm alarm) {
                 mPresenter.deleteAlarm(alarm);
@@ -98,8 +99,6 @@ public class AlarmsActivity extends WelloToolbarActivity implements AlarmsViewCo
     }
 
     private void switchActivityContentLayout(boolean showAlarms) {
-        noAlarmsViewVisible = !showAlarms;
-
         int visibilityPlus = showAlarms ? View.VISIBLE : View.GONE,
                 visibilityMinus = showAlarms ? View.GONE : View.VISIBLE;
 
@@ -140,7 +139,7 @@ public class AlarmsActivity extends WelloToolbarActivity implements AlarmsViewCo
 
     @Override
     public boolean isNoAlarmsViewVisible() {
-        return noAlarmsViewVisible;
+        return mNoAlarmsLayout.getVisibility() == View.VISIBLE;
     }
 
     @Override

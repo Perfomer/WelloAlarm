@@ -33,9 +33,6 @@ public class WelloLayoutManager extends LinearLayoutManager {
         return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    /**
-     * notifyDataSetChanged时会调用此方法
-     */
     @Override
     public void onItemsChanged(RecyclerView recyclerView) {
         super.onItemsChanged(recyclerView);
@@ -47,7 +44,7 @@ public class WelloLayoutManager extends LinearLayoutManager {
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-        this.recycler = recycler; // 二话不说，先把recycler保存了
+        this.recycler = recycler;
         if (!firstLayoutChildren || adapter == null || getItemCount() <= 0 || state.isPreLayout()) {
             return;
         }
@@ -55,7 +52,6 @@ public class WelloLayoutManager extends LinearLayoutManager {
 
         buildLocationRects();
 
-        // 先回收放到缓存，后面会再次统一layout
         detachAndScrapAttachedViews(recycler);
         layoutItemsOnCreate(recycler);
     }
@@ -68,7 +64,6 @@ public class WelloLayoutManager extends LinearLayoutManager {
         int tempPosition = getPaddingTop();
         int itemCount = getItemCount();
         for (int i = 0; i < itemCount; i++) {
-            // 1. 先计算出itemWidth和itemHeight
             int viewType = adapter.getItemViewType(i);
             int itemHeight;
             if (viewTypeHeightMap.containsKey(viewType)) {
@@ -81,7 +76,6 @@ public class WelloLayoutManager extends LinearLayoutManager {
                 viewTypeHeightMap.put(viewType, itemHeight);
             }
 
-            // 2. 组装Rect并保存
             Rect rect = new Rect();
             rect.left = getPaddingLeft();
             rect.top = tempPosition;
@@ -105,9 +99,6 @@ public class WelloLayoutManager extends LinearLayoutManager {
         super.onAdapterChanged(oldAdapter, newAdapter);
     }
 
-    /**
-     * 对外提供接口，找到第一个可视view的index
-     */
     public int findFirstVisibleItemPosition() {
         int count = locationRects.size();
         Rect displayRect = new Rect(0, scroll, getWidth(), getHeight() + scroll);
@@ -120,9 +111,6 @@ public class WelloLayoutManager extends LinearLayoutManager {
         return 0;
     }
 
-    /**
-     * 计算可滑动的最大值
-     */
     private void computeMaxScroll() {
         maxScroll = locationRects.get(locationRects.size() - 1).bottom - getHeight();
         if (maxScroll < 0) {
@@ -143,9 +131,6 @@ public class WelloLayoutManager extends LinearLayoutManager {
         }
     }
 
-    /**
-     * 初始化的时候，layout子View
-     */
     private void layoutItemsOnCreate(RecyclerView.Recycler recycler) {
         int itemCount = getItemCount();
         for (int i = 0; i < itemCount; i++) {
@@ -164,12 +149,9 @@ public class WelloLayoutManager extends LinearLayoutManager {
     }
 
 
-    /**
-     * 初始化的时候，layout子View
-     */
     private void layoutItemsOnScroll() {
         int childCount = getChildCount();
-        // 1. 已经在屏幕上显示的child
+
         int itemCount = getItemCount();
         Rect displayRect = new Rect(0, scroll, getWidth(), getHeight() + scroll);
         int firstVisiblePosition = -1;
@@ -181,11 +163,11 @@ public class WelloLayoutManager extends LinearLayoutManager {
             }
             int position = getPosition(child);
             if (!Rect.intersects(displayRect, locationRects.get(position))) {
-                // 回收滑出屏幕的View
+
                 removeAndRecycleView(child, recycler);
                 attachedItems.put(position, false);
             } else {
-                // Item还在显示区域内，更新滑动后Item的位置
+
                 if (lastVisiblePosition < 0) {
                     lastVisiblePosition = position;
                 }
@@ -196,13 +178,12 @@ public class WelloLayoutManager extends LinearLayoutManager {
                     firstVisiblePosition = Math.min(firstVisiblePosition, position);
                 }
 
-                layoutItem(child, locationRects.get(position)); //更新Item位置
+                layoutItem(child, locationRects.get(position));
             }
         }
 
-        // 2. 复用View处理
         if (firstVisiblePosition > 0) {
-            // 往前搜索复用
+
             for (int i = firstVisiblePosition - 1; i >= 0; i--) {
                 if (Rect.intersects(displayRect, locationRects.get(i)) &&
                         !attachedItems.get(i)) {
@@ -212,7 +193,7 @@ public class WelloLayoutManager extends LinearLayoutManager {
                 }
             }
         }
-        // 往后搜索复用
+
         for (int i = lastVisiblePosition + 1; i < itemCount; i++) {
             Rect locationRect = locationRects.get(i);
             if (Rect.intersects(displayRect, locationRect) &&
@@ -224,9 +205,6 @@ public class WelloLayoutManager extends LinearLayoutManager {
         }
     }
 
-    /**
-     * 复用position对应的View
-     */
     private void reuseItemOnSroll(int position, boolean addViewFromTop) {
         View scrap = recycler.getViewForPosition(position);
         measureChildWithMargins(scrap, 0, 0);
@@ -238,7 +216,7 @@ public class WelloLayoutManager extends LinearLayoutManager {
         } else {
             addView(scrap);
         }
-        // 将这个Item布局出来
+
         layoutItem(scrap, locationRects.get(position));
         attachedItems.put(position, true);
     }
@@ -284,7 +262,7 @@ public class WelloLayoutManager extends LinearLayoutManager {
         } else if (dy + scroll > maxScroll) {
             travel = maxScroll - scroll;
         }
-        scroll += travel; //累计偏移量
+        scroll += travel;
         lastDy = dy;
         if (!state.isPreLayout() && getChildCount() > 0) {
             layoutItemsOnScroll();
@@ -320,7 +298,7 @@ public class WelloLayoutManager extends LinearLayoutManager {
             if (displayRect.intersect(itemRect)) {
 
                 if (lastDy > 0) {
-                    // scroll变大，属于列表往下走，往下找下一个为snapView
+
                     if (i < itemCount - 1) {
                         Rect nextRect = locationRects.get(i + 1);
                         return nextRect.top - displayRect.top;

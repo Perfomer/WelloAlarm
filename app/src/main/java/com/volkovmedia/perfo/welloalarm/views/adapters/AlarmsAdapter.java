@@ -3,13 +3,16 @@ package com.volkovmedia.perfo.welloalarm.views.adapters;
 import android.content.Context;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 
 import com.volkovmedia.perfo.welloalarm.R;
 import com.volkovmedia.perfo.welloalarm.general.UniqueList;
+import com.volkovmedia.perfo.welloalarm.general.WelloApplication;
 import com.volkovmedia.perfo.welloalarm.objects.Alarm;
 import com.volkovmedia.perfo.welloalarm.views.adapters.viewholders.AlarmViewHolder;
 
@@ -17,12 +20,10 @@ public class AlarmsAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
 
     private UniqueList<Alarm> mAlarms;
     private Callback mCallback;
-    private Context mContext;
 
-    public AlarmsAdapter(Context context, Callback callback) {
+    public AlarmsAdapter(Callback callback) {
         mAlarms = new UniqueList<>();
         this.mCallback = callback;
-        this.mContext = context;
     }
 
     @Override
@@ -37,8 +38,21 @@ public class AlarmsAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         View rootView = viewHolder.getRootView();
         Switch switchView = viewHolder.getSwitch();
 
-        PopupMenu menu = createPopup(currentAlarm, switchView);
         rootView.setOnLongClickListener(view -> {
+            PopupMenu menu = viewHolder.getPopupMenu();
+
+            menu.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.action_edit:
+                        mCallback.editAlarm(currentAlarm);
+                        break;
+                    case R.id.action_delete:
+                        mCallback.deleteAlarm(currentAlarm);
+                        break;
+                }
+                return false;
+            });
+
             menu.show();
             return false;
         });
@@ -62,25 +76,6 @@ public class AlarmsAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
     public void setDataSource(UniqueList<Alarm> alarms) {
         this.mAlarms = alarms;
         notifyDataSetChanged();
-    }
-
-    private PopupMenu createPopup(Alarm alarm, View anchor) {
-        PopupMenu popupMenu = new PopupMenu(mContext, anchor);
-        popupMenu.inflate(R.menu.menu_alarm);
-
-        popupMenu.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_edit:
-                    mCallback.editAlarm(alarm);
-                    break;
-                case R.id.action_delete:
-                    mCallback.deleteAlarm(alarm);
-                    break;
-            }
-            return false;
-        });
-
-        return popupMenu;
     }
 
     public interface Callback {

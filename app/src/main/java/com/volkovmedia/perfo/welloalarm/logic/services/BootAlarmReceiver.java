@@ -11,12 +11,10 @@ import com.volkovmedia.perfo.welloalarm.general.WelloApplication;
 import com.volkovmedia.perfo.welloalarm.logic.WelloAlarmManager;
 import com.volkovmedia.perfo.welloalarm.objects.Alarm;
 
-import javax.inject.Inject;
-
 import static com.volkovmedia.perfo.welloalarm.logic.WelloAlarmManager.findNearestAlarm;
 import static com.volkovmedia.perfo.welloalarm.objects.Alarm.KEY_ALARM;
 
-public class AlarmBroadcastReceiver extends BroadcastReceiver {
+public class BootAlarmReceiver extends BroadcastReceiver {
 
     //TODO [0] Fix empty intent
     //TODO [1] Disable disposable alarms

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/bender_regular"
+        app:fontStyle="normal"
+        app:fontWeight="400"
+        app:font="@font/bender_regular"
+
+        />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="100"
+        android:font="@font/bender_light"
+        app:fontStyle="normal"
+        app:fontWeight="100"
+        app:font="@font/bender_light"
+        />
+
+</font-family>
