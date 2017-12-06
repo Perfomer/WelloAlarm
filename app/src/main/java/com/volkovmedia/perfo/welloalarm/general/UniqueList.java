@@ -35,8 +35,12 @@ public class UniqueList<T extends DataContainer> {
         int id = item.getId(),
                 position = getPositionByKey(id);
 
-        mList.remove(getByKey(id));
-        mList.add(position, item);
+        if (position != -1) {
+            mList.remove(getByKey(id));
+            mList.add(position, item);
+        } else {
+            mList.add(item);
+        }
     }
 
     public void remove(T item) {

@@ -42,7 +42,6 @@ public class AlarmsModel implements IMvpModel {
     }
 
     void saveAlarm(Alarm alarm, boolean update, DatabaseTaskCallback<Integer> callback) {
-        if (mAlarms != null) mAlarms.update(alarm);
         SaveAlarmTask task = new SaveAlarmTask(mDatabase, mAlarms, update, callback);
         task.execute(alarm);
     }

@@ -25,7 +25,7 @@ public class AlarmsPresenter extends BasePresenter<AlarmsContract.View, AlarmsMo
     @Override
     public void viewIsReady() {
         getModel().loadAlarms(false, alarms -> {
-            showAlarmsLayout(alarms);
+//            showAlarmsLayout(alarms);
 
             if (!mAlarmsScheduled) {
                 mAlarmsScheduled = mAlarmManager.scheduleNearestAlarm(alarms);
@@ -34,7 +34,9 @@ public class AlarmsPresenter extends BasePresenter<AlarmsContract.View, AlarmsMo
     }
 
     private void showAlarms(UniqueList<Alarm> alarms) {
-        switchAlarmsLayout(alarms, () -> getView().showAlarms(alarms));
+        switchAlarmsLayout(alarms, () -> {
+            if (getView().isNoAlarmsViewVisible()) getView().showAlarms(alarms);
+        });
     }
 
     private void showAlarmsLayout(UniqueList<Alarm> alarms) {
@@ -46,7 +48,7 @@ public class AlarmsPresenter extends BasePresenter<AlarmsContract.View, AlarmsMo
 
         if (alarms.size() == 0) {
             if (!noAlarmsViewVisible) getView().showNoAlarmsLayout();
-        } else if (noAlarmsViewVisible) action.onViewUpdate();
+        } else action.onViewUpdate();
     }
 
     private void onAlarmsUpdated(UniqueList<Alarm> alarms) {
@@ -55,7 +57,10 @@ public class AlarmsPresenter extends BasePresenter<AlarmsContract.View, AlarmsMo
     }
 
     public void onInterfaceUpdateAsked() {
-        getModel().loadAlarms(true, alarms -> getView().showAlarms(alarms));
+        getModel().loadAlarms(true,
+                alarms -> switchAlarmsLayout(alarms,
+                        () -> getView().showAlarms(alarms))
+        );
     }
 
     public void editAlarm(Alarm alarm, boolean withCallback) {

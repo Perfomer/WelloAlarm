@@ -11,7 +11,7 @@ import static com.volkovmedia.perfo.welloalarm.general.Constants.WEEKS_TYPES;
 class SQLiteHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "welloalarmdb";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     SQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
