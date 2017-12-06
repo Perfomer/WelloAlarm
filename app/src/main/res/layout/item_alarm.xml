@@ -25,10 +25,10 @@
 
             <TextView
                 android:id="@+id/i_alarm_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:textColor="@color/gray"
+                android:visibility="gone"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/i_alarm_switch"
@@ -40,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                app:layout_goneMarginTop="-4dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="32sp"
                 app:layout_constraintLeft_toLeftOf="@+id/i_alarm_name"
@@ -93,13 +94,6 @@
                     style="@style/DayViewMini"
                     android:text="@string/mon" />
 
-                <TextView
-                    style="@style/DayViewMini"
-                    android:text="@string/mon" />
-
-                <TextView
-                    style="@style/DayViewMini"
-                    android:text="@string/mon" />
 
             </GridLayout>
 
@@ -115,7 +109,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/i_alarm_days">
 
                 <TextView
-                    style="@style/DayViewMini"
+                    style="@style/WeekViewMini"
                     android:text="@string/mon" />
 
                 <TextView

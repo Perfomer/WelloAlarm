@@ -103,7 +103,7 @@ public class SettingsActivity extends WelloToolbarActivity {
     private Alarm saveAlarm() {
         int id = editingMode ? alarmId : INT_NO_VALUE;
 
-        return new Alarm(id, alarmTimeManager.getCurrentHour(), alarmTimeManager.getCurrentMinute(), etName.getText().toString(), null, isAlarmEnabled, true, new boolean[] {alarmWeekOdd, alarmWeekEven}, alarmDays);
+        return new Alarm(id, alarmTimeManager.getCurrentHour(), alarmTimeManager.getCurrentMinute(), etName.getText().toString(), null, isAlarmEnabled, false, true, new boolean[] {alarmWeekOdd, alarmWeekEven}, alarmDays);
     }
 
     private void saveAlarmAndExit() {

@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.volkovmedia.perfo.welloalarm.database.PreferencesManager;
@@ -15,12 +16,15 @@ import com.volkovmedia.perfo.welloalarm.objects.Alarm;
 
 import javax.inject.Inject;
 
+import static com.volkovmedia.perfo.welloalarm.general.Constants.INT_NO_VALUE;
+import static com.volkovmedia.perfo.welloalarm.general.Constants.MILLISECONDS_IN_SECOND;
+import static com.volkovmedia.perfo.welloalarm.general.Constants.SECONDS_IN_MINUTE;
 import static com.volkovmedia.perfo.welloalarm.general.GeneralMethods.hasEnabledAlarms;
 import static com.volkovmedia.perfo.welloalarm.logic.TimeManager.getClosestTimeDifference;
 import static com.volkovmedia.perfo.welloalarm.objects.Alarm.KEY_ALARM;
 
 public class WelloAlarmManager {
-    //TODO Think about removing current alarm id from SharedPreferences
+
     private AlarmManager mAlarmManager;
 
     @Inject
@@ -29,86 +33,122 @@ public class WelloAlarmManager {
     @Inject
     PreferencesManager mPreferencesManager;
 
-    private PendingIntent mPendingIntent;
-
     public WelloAlarmManager() {
         WelloApplication.getComponent().inject(this);
         this.mAlarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
     }
 
     private void setCurrentAlarm(Alarm alarm) {
+        setCurrentAlarm(alarm, getClosestTimeDifference(alarm));
+    }
+
+    private void setCurrentAlarm(Alarm alarm, long timeDifference) {
         int alarmId = alarm.getId();
 
         mPreferencesManager.setCurrentAlarmIdentifier(alarmId);
 
-        long timeDifference = getClosestTimeDifference(alarm);
         long time = System.currentTimeMillis() + timeDifference;
-//        long time = System.currentTimeMillis() + 100; //TODO remove debug line
 
-        mPendingIntent = createPendingIntent(alarm, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        mAlarmManager.set(AlarmManager.RTC_WAKEUP, time, mPendingIntent);
+        PendingIntent pendingIntent = createPendingIntent();
+        mAlarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
 
         Toast.makeText(
                 mContext,
                 "Будильник " + (alarm.getName().isEmpty() ? "" : (alarm.getName()) + " ") + "зазвонит через " + (timeDifference / 1000 / 60) + " минут.",
                 Toast.LENGTH_LONG
         ).show();
-
     }
 
     public boolean scheduleNearestAlarm(UniqueList<Alarm> alarms) {
-        if (!hasEnabledAlarms(alarms)) return false;
+        if (!hasEnabledAlarms(alarms)) {
+            cancelCurrentAlarm();
+            return false;
+        }
 
-        int currentAlarmId = mPreferencesManager.getCurrentAlarmIdentifier();
-
-        //cancelAlarm(alarms.getByKey(currentAlarmId));
         setCurrentAlarm(findNearestAlarm(alarms));
+        return true;
+    }
+
+    public boolean scheduleNextAlarm(UniqueList<Alarm> alarms) {
+        if (!hasEnabledAlarms(alarms)) {
+            cancelCurrentAlarm();
+            return false;
+        }
+
+        Alarm currentAlarm = alarms.getByKey(mPreferencesManager.getCurrentAlarmIdentifier());
+        Alarm nextAlarm = getNextAlarm(alarms, currentAlarm);
+        setCurrentAlarm(nextAlarm);
 
         return true;
     }
 
-    private void cancelAlarm(Alarm alarm) {
-        if (alarm != null)
-            mAlarmManager.cancel(createPendingIntent(alarm, PendingIntent.FLAG_CANCEL_CURRENT));
+//    public void setSnoozedAlarm(Alarm alarm) {
+//        long timeDifference = 5 * SECONDS_IN_MINUTE * MILLISECONDS_IN_SECOND;
+//        mPreferencesManager.setSnoozedAlarm(alarm.getId(),System.currentTimeMillis() + timeDifference);
+//        setCurrentAlarm(alarm, timeDifference);
+//    }
+
+    private void cancelCurrentAlarm() {
+        mPreferencesManager.removeCurrentAlarmIdentifier();
+        mAlarmManager.cancel(createPendingIntent());
+
+        Toast.makeText(
+                mContext,
+                "Будильников нет",
+                Toast.LENGTH_SHORT).show();
     }
 
-    private PendingIntent createPendingIntent(@NonNull Alarm alarm, int flag) {
+    private PendingIntent createPendingIntent() {
         Intent intent = new Intent(mContext, AlarmBroadcastReceiver.class);
-
-        intent.putExtra(KEY_ALARM, alarm);
-        intent.putExtra("NAME", 10101);
-
-        //TODO Play with Pending Intent flags.
-        return PendingIntent.getBroadcast(mContext, alarm.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public static Alarm findNearestAlarm(UniqueList<Alarm> alarmList) {
-        Alarm nearestAlarm = null;
-        int position = 0;
 
-        for (; position < alarmList.size(); position++) {
-            Alarm currentAlarm = alarmList.get(position);
-            if (currentAlarm.isEnabled()) {
-                nearestAlarm = currentAlarm;
-                break;
-            }
+    public static Alarm findNearestAlarm(UniqueList<Alarm> alarmsList) {
+        alarmsList = getEnabledAlarms(alarmsList);
+
+        switch (alarmsList.size()) {
+            case 0:
+                return null;
+            case 1:
+                return alarmsList.get(0);
+            default:
+                return findNearestAlarm(alarmsList, alarmsList.get(0));
         }
+    }
 
+    private static Alarm getNextAlarm(UniqueList<Alarm> alarmList, Alarm alarm) {
+        if (alarm == null || !alarm.isEnabled()) return findNearestAlarm(alarmList);
+
+        return findNearestAlarm(alarmList, alarm);
+    }
+
+    private static Alarm findNearestAlarm(UniqueList<Alarm> enabledAlarmsList, @NonNull Alarm alarm) {
+        Alarm nearestAlarm = alarm;
         long nearestTimeDifference = getClosestTimeDifference(nearestAlarm);
 
-        for (position++; position < alarmList.size(); position++) {
-            Alarm currentAlarm = alarmList.get(position);
-            if (!currentAlarm.isEnabled()) continue;
+        for (int i = 1; i < enabledAlarmsList.size(); i++) {
+            Alarm currentAlarm = enabledAlarmsList.get(i);
 
             long currentTimeDifference = getClosestTimeDifference(currentAlarm);
 
-            if (nearestTimeDifference > currentTimeDifference) {
+            if (currentTimeDifference < nearestTimeDifference) {
                 nearestAlarm = currentAlarm;
                 nearestTimeDifference = currentTimeDifference;
             }
         }
 
         return nearestAlarm;
+    }
+
+    private static UniqueList<Alarm> getEnabledAlarms(UniqueList<Alarm> alarmList) {
+        UniqueList<Alarm> alarms = new UniqueList<>();
+
+        for (int i = 0; i < alarmList.size(); i++) {
+            Alarm currentAlarm = alarmList.get(i);
+            if (currentAlarm.isEnabled()) alarms.add(currentAlarm);
+        }
+
+        return alarms;
     }
 }

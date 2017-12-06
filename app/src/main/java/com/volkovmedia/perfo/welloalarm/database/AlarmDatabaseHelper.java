@@ -66,6 +66,22 @@ public class AlarmDatabaseHelper {
         return readAlarmsWithCondition(null, null);
     }
 
+    public Alarm testAskingForAlarmWithJoinedQuery() {
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+
+        String table = "people as PL inner join position as PS on PL.posid = PS.id";
+        String columns[] = { "PL.name as Name", "PS.name as Position", "salary as Salary" };
+        String selection = "salary < ?";
+        String[] selectionArgs = {"12000"};
+
+        Cursor c = db.query(table, columns, selection, selectionArgs, null, null, null);
+
+        c.close();
+
+        return null;
+    }
+
+
     public Alarm readAlarm(int id) {
         return readAlarmsWithCondition(FIELD_ID + " = ?", new String[]{String.valueOf(id)}).get(0);
     }
@@ -94,7 +110,7 @@ public class AlarmDatabaseHelper {
                 boolean[] weeks = castToBooleanArray(weeksMap, WEEKS_TYPES),
                         days = castToBooleanArray(daysMap, DAYS_TYPES);
 
-                Alarm alarm = new Alarm(id, hours, minutes, name, sound, enabled, vibrate, weeks, days);
+                Alarm alarm = new Alarm(id, hours, minutes, name, sound, enabled, false, vibrate, weeks, days);
                 alarms.add(alarm);
             } while (cursor.moveToNext());
         }

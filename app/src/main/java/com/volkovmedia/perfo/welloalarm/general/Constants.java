@@ -27,4 +27,6 @@ public final class Constants {
             WEEK_ODD = 0,
             WEEK_EVEN = 1;
 
+    public static final long SNOOZE_TIME = 5 * SECONDS_IN_MINUTE * MILLISECONDS_IN_SECOND;
+
 }

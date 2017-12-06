@@ -24,13 +24,16 @@ public class AlarmsActivity extends WelloToolbarActivity implements AlarmsContra
 
     private static final int RQ_NEW_ALARM = 101, RQ_EDIT_ALARM = 102;
 
-    private AlarmsContract.Presenter mPresenter;
+    private AlarmsPresenter mPresenter;
+
+    private boolean isLoadedWithResult;
 
     @BindView(R.id.act_main_recyclerview)
     RecyclerView mAlarmsRecyclerView;
 
     @BindView(R.id.act_main_noalarms)
     View mNoAlarmsLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,6 @@ public class AlarmsActivity extends WelloToolbarActivity implements AlarmsContra
         fab.setOnClickListener(view -> startSettingsActivity(null));
 
         mAlarmsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        mAlarmsRecyclerView.setLayoutManager(new WelloLayoutManager(this));
         mAlarmsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mAlarmsRecyclerView.setAdapter(new AlarmsAdapter(new AlarmsAdapter.Callback() {
             @Override
@@ -69,8 +71,19 @@ public class AlarmsActivity extends WelloToolbarActivity implements AlarmsContra
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (!isLoadedWithResult) {
+            mPresenter.onInterfaceUpdateAsked();
+        }
+
+        isLoadedWithResult = false;
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        isLoadedWithResult = true;
 
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
@@ -120,7 +133,6 @@ public class AlarmsActivity extends WelloToolbarActivity implements AlarmsContra
 
     @Override
     public void onAlarmEdited(Alarm alarm, int position) {
-//        mAlarmsRecyclerView.getAdapter().notifyDataSetChanged();
         mAlarmsRecyclerView.getAdapter().notifyItemChanged(position);
         mAlarmsRecyclerView.scrollToPosition(position);
         Snackbar.make(mAlarmsRecyclerView, "Alarm " + alarm.getName() + " has been edited", Snackbar.LENGTH_LONG)
@@ -129,9 +141,7 @@ public class AlarmsActivity extends WelloToolbarActivity implements AlarmsContra
 
     @Override
     public void onAlarmDeleted(Alarm alarm, int position) {
-//        mAlarmsRecyclerView.getAdapter().notifyDataSetChanged();
         mAlarmsRecyclerView.getAdapter().notifyItemRemoved(position);
-        //mAlarmsRecyclerView.scrollBy(0, 1);
         Snackbar.make(mAlarmsRecyclerView, "Alarm " + alarm.getName() + " has been deleted", Snackbar.LENGTH_LONG)
                 .setAction(R.string.cancel, view -> mPresenter.addAlarm(alarm))
                 .show();
@@ -143,8 +153,12 @@ public class AlarmsActivity extends WelloToolbarActivity implements AlarmsContra
     }
 
     @Override
+    public void showAlarmsViews() {
+        switchActivityContentLayout(true);
+    }
+
+    @Override
     public void onAlarmAdded(Alarm alarm, int position) {
-//        mAlarmsRecyclerView.getAdapter().notifyDataSetChanged();
         mAlarmsRecyclerView.getAdapter().notifyItemInserted(position);
         mAlarmsRecyclerView.scrollToPosition(position);
         Snackbar.make(mAlarmsRecyclerView, "Alarm " + alarm.getName() + " has been added", Snackbar.LENGTH_LONG)

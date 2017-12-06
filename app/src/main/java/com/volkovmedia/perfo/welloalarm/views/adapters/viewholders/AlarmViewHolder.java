@@ -18,6 +18,8 @@ import com.volkovmedia.perfo.welloalarm.objects.Alarm;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.volkovmedia.perfo.welloalarm.general.Constants.WEEK_EVEN;
+import static com.volkovmedia.perfo.welloalarm.general.Constants.WEEK_ODD;
 import static com.volkovmedia.perfo.welloalarm.general.GeneralMethods.getTrueItemsCount;
 import static com.volkovmedia.perfo.welloalarm.general.GeneralMethods.getTimeText;
 import static com.volkovmedia.perfo.welloalarm.general.ResourceManager.getDayName;
@@ -54,8 +56,12 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         mTime.setText(getTimeText(data.getHours(), data.getMinutes()));
         mSwitch.setChecked(data.isEnabled());
 
-        if (TextUtils.isEmpty(name)) mName.setVisibility(View.GONE);
-        else mName.setText(data.getName());
+        if (TextUtils.isEmpty(name)) {
+            mName.setVisibility(View.GONE);
+        } else {
+            mName.setVisibility(View.VISIBLE);
+            mName.setText(data.getName());
+        }
 
         initGridLayouts(data);
     }
@@ -116,18 +122,19 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
     private void fillWeeksGridLayout(boolean[] weeks) {
         mWeeks.removeAllViews();
         ContextThemeWrapper contextThemeWrapper = createContextThemeWrapper(R.style.WeekViewMini);
+        boolean weekly = weeks[WEEK_EVEN] == weeks[WEEK_ODD];
 
-        if (weeks[0]) {
+        if (weeks[WEEK_EVEN] || weekly) {
             addViewToGrid(mWeeks, getReadyDateView(contextThemeWrapper, R.string.ev));
         }
 
-        if (weeks[1]) {
+        if (weeks[WEEK_ODD] || weekly) {
             addViewToGrid(mWeeks, getReadyDateView(contextThemeWrapper, R.string.od));
         }
     }
 
     private TextView getReadyDateView(ContextThemeWrapper ctw, int textId) {
-        return getReadyDateView(ctw, mRootView.getContext().getString(textId));
+        return getReadyDateView(ctw, ctw.getString(textId));
     }
 
     private TextView getReadyDateView(ContextThemeWrapper ctw, String text) {

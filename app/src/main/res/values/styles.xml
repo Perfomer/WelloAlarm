@@ -86,6 +86,8 @@
 
     <style name="WeekViewMini" parent="DayViewMini">
         <item name="android:layout_width">64dp</item>
+        <item name="android:background">@drawable/label_mini_week</item>
+        <item name="android:textColor">@color/dark_gray</item>
     </style>
 
     <style name="SettingsHeader">

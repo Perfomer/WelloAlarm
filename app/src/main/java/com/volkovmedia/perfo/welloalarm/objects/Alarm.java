@@ -3,55 +3,61 @@ package com.volkovmedia.perfo.welloalarm.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.volkovmedia.perfo.welloalarm.general.GeneralMethods;
+
+import static com.volkovmedia.perfo.welloalarm.general.Constants.DAYS_TYPES;
 import static com.volkovmedia.perfo.welloalarm.general.Constants.INT_NO_VALUE;
+import static com.volkovmedia.perfo.welloalarm.general.Constants.WEEKS_TYPES;
 
 public class Alarm implements Parcelable, DataContainer {
 
     public final static String KEY_ALARM = "alarm";
 
     private int mIdentifier = INT_NO_VALUE;
-    private int mHours, mMinutes;
+    private int mHours, mMinutes, mSnoozeCount;
 
     private String mName;
     private String mSound;
 
-    private boolean mEnabled, mVibrate;
+    private boolean mEnabled, mVibrate, mSnoozed;
     private boolean[] mWeeks, mDays;
 
-    public Alarm(int identifier, int hours, int minutes, String name, String sound, boolean enabled, boolean vibrate, boolean[] weeks, boolean[] days) {
-        init(identifier, hours, minutes, name, sound, enabled, vibrate, weeks, days);
+    public Alarm(int identifier, int hours, int minutes, String name, String sound, boolean enabled, boolean snoozed, boolean vibrate, boolean[] weeks, boolean[] days) {
+        init(identifier, hours, minutes, name, sound, enabled, vibrate, snoozed, weeks, days);
     }
 
     public Alarm(int hours, int minutes, String name, String sound, boolean enabled, boolean vibrate, boolean[] weeks, boolean[] days) {
-        init(hours, minutes, name, sound, enabled, vibrate, weeks, days);
+        init(hours, minutes, name, sound, enabled, vibrate, false, weeks, days);
     }
 
     protected Alarm(Parcel in) {
         mIdentifier = in.readInt();
         mHours = in.readInt();
         mMinutes = in.readInt();
+        mSnoozeCount = in.readInt();
         mName = in.readString();
         mSound = in.readString();
         mEnabled = in.readByte() != 0;
         mVibrate = in.readByte() != 0;
-        mWeeks = in.createBooleanArray();
-        mDays = in.createBooleanArray();
+        mSnoozed = in.readByte() != 0;
+        setWeeks(in.createBooleanArray());
+        setDays(in.createBooleanArray());
     }
 
-    private void init(int hours, int minutes, String name, String sound, boolean enabled, boolean vibrate, boolean[] weeks, boolean[] days) {
+    private void init(int hours, int minutes, String name, String sound, boolean enabled, boolean vibrate, boolean snoozed, boolean[] weeks, boolean[] days) {
         this.mHours = hours;
         this.mMinutes = minutes;
         this.mName = name;
         this.mSound = sound;
         this.mEnabled = enabled;
         this.mVibrate = vibrate;
-        this.mWeeks = weeks;
-        this.mDays = days;
+        setWeeks(weeks);
+        setDays(days);
     }
 
-    private void init(int identifier, int hours, int minutes, String name, String sound, boolean enabled, boolean vibrate, boolean[] weeks, boolean[] days) {
+    private void init(int identifier, int hours, int minutes, String name, String sound, boolean enabled, boolean vibrate, boolean snoozed, boolean[] weeks, boolean[] days) {
         this.mIdentifier = identifier;
-        init(hours, minutes, name, sound, enabled, vibrate, weeks, days);
+        init(hours, minutes, name, sound, enabled, vibrate, snoozed, weeks, days);
     }
 
     public static final Creator<Alarm> CREATOR = new Creator<Alarm>() {
@@ -128,7 +134,12 @@ public class Alarm implements Parcelable, DataContainer {
         return mWeeks;
     }
 
+    public boolean isDisposable() {
+        return GeneralMethods.getTrueItemsCount(getDays()) == 0;
+    }
+
     public void setWeeks(boolean[] weeks) {
+        if (weeks.length != WEEKS_TYPES) throw new IllegalArgumentException("Weeks array length is: " + weeks.length);
         this.mWeeks = weeks;
     }
 
@@ -137,6 +148,7 @@ public class Alarm implements Parcelable, DataContainer {
     }
 
     public void setDays(boolean[] days) {
+        if (days.length != DAYS_TYPES) throw new IllegalArgumentException("Days array length is: " + days.length);
         this.mDays = days;
     }
 
@@ -150,10 +162,12 @@ public class Alarm implements Parcelable, DataContainer {
         parcel.writeInt(mIdentifier);
         parcel.writeInt(mHours);
         parcel.writeInt(mMinutes);
+        parcel.writeInt(mSnoozeCount);
         parcel.writeString(mName);
         parcel.writeString(mSound);
         parcel.writeByte((byte) (mEnabled ? 1 : 0));
         parcel.writeByte((byte) (mVibrate ? 1 : 0));
+        parcel.writeByte((byte) (mSnoozed ? 1 : 0));
         parcel.writeBooleanArray(mWeeks);
         parcel.writeBooleanArray(mDays);
     }

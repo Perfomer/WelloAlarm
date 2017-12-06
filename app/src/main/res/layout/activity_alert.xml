@@ -80,6 +80,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
         android:backgroundTint="@color/colorPrimaryDark"
+        android:enabled="false"
         android:onClick="onAlarmSetAsideClick"
         android:text="@string/alarm_setaside"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -1,17 +1,16 @@
 package com.volkovmedia.perfo.welloalarm.activities.mvp.implementation.alert;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,19 +18,16 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.volkovmedia.perfo.welloalarm.R;
+import com.volkovmedia.perfo.welloalarm.general.GeneralMethods;
+import com.volkovmedia.perfo.welloalarm.logic.WelloAlarmManager;
+import com.volkovmedia.perfo.welloalarm.logic.WelloCalendar;
 import com.volkovmedia.perfo.welloalarm.objects.Alarm;
 
-import static com.volkovmedia.perfo.welloalarm.general.Constants.MILLISECONDS_IN_SECOND;
-import static com.volkovmedia.perfo.welloalarm.general.Constants.SECONDS_IN_MINUTE;
-import static com.volkovmedia.perfo.welloalarm.general.GeneralMethods.isAlarmDisposable;
 import static com.volkovmedia.perfo.welloalarm.objects.Alarm.KEY_ALARM;
 
 public class AlertActivity extends AppCompatActivity {
 
     private Alarm mAlarm;
-
-    private PendingIntent aPendingIntent;
-    private AlarmManager aAlarmManager;
 
     private MediaPlayer aMediaPlayer;
     private Vibrator aVibrator;
@@ -44,20 +40,15 @@ public class AlertActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alert);
 
         mAlarm = getIntent().getParcelableExtra(KEY_ALARM);
-        if (isAlarmDisposable(mAlarm)) {
-            Log.d("WOW4", "It's worked!");
-//            aIDManager.enableAlarm(mAlarm.getIdentifier(), false);
-            //aIDManager.saveAlarm(mAlarm);
-        }
 
         initViews();
         initPlayer();
         prepareForCalls();
-
-        aAlarmManager.cancel(aPendingIntent);
     }
 
     private void initViews() {
+        WelloCalendar calendar = new WelloCalendar();
+
         TextView timeView = findViewById(R.id.alarmact_time),
                 nameView = findViewById(R.id.alarmact_name);
 
@@ -65,10 +56,8 @@ public class AlertActivity extends AppCompatActivity {
         if (name.isEmpty()) nameView.setVisibility(View.GONE);
         else nameView.setText(name);
 
-//        CurrentTimeManager currentTimeManager = new CurrentTimeManager();
-
-//        timeView.setText(Algorithms.getTimeText(currentTimeManager.getCurrentHour(), currentTimeManager.getCurrentMinute()));
-//        timeView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_flashing));
+        timeView.setText(GeneralMethods.getTimeText(calendar.getCurrentHour(), calendar.getCurrentMinute()));
+        timeView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_flashing));
     }
 
     private void initPlayer() {
@@ -77,17 +66,24 @@ public class AlertActivity extends AppCompatActivity {
         if (mAlarm.isVibrate()) {
             aVibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
             long[] pattern = {1000, 200, 200, 200};
-            aVibrator.vibrate(pattern, 0);
+
+            if (aVibrator != null) {
+                aVibrator.vibrate(pattern, 0);
+            }
         }
         try {
+            String sound = mAlarm.getSound();
+            if (TextUtils.isEmpty(sound)) sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString();
+
             aMediaPlayer.setVolume(1.0f, 1.0f);
-            aMediaPlayer.setDataSource(this, Uri.parse(mAlarm.getSound()));
+            aMediaPlayer.setDataSource(this, Uri.parse(sound));
             aMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
             aMediaPlayer.setLooping(true);
             aMediaPlayer.setOnCompletionListener(mp -> {
                 mp.reset();
                 mp.release();
             });
+
             aMediaPlayer.prepare();
             aMediaPlayer.start();
 
@@ -118,10 +114,9 @@ public class AlertActivity extends AppCompatActivity {
     }
 
     public void onAlarmSetAsideClick(View v) {
-        aAlarmManager.set(
-                AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + 5 * SECONDS_IN_MINUTE * MILLISECONDS_IN_SECOND,
-                aPendingIntent);
+        WelloAlarmManager alarmManager = new WelloAlarmManager();
+//        alarmManager.setSnoozedAlarm(mAlarm);
+
         finishActivity();
     }
 
@@ -136,8 +131,7 @@ public class AlertActivity extends AppCompatActivity {
             if (aVibrator != null) aVibrator.cancel();
             aMediaPlayer.stop();
             aMediaPlayer.release();
-        } catch (Exception e) {
-        }
+        } catch (Exception ignored) { }
 
         super.onDestroy();
     }
@@ -153,13 +147,13 @@ public class AlertActivity extends AppCompatActivity {
                     case TelephonyManager.CALL_STATE_RINGING:
                         try {
                             aMediaPlayer.pause();
-                        } catch (IllegalStateException e) {
+                        } catch (IllegalStateException ignored) {
                         }
                         break;
                     case TelephonyManager.CALL_STATE_IDLE:
                         try {
                             aMediaPlayer.start();
-                        } catch (IllegalStateException e) {
+                        } catch (IllegalStateException ignored) {
                         }
                         break;
                 }
@@ -167,7 +161,9 @@ public class AlertActivity extends AppCompatActivity {
             }
         };
 
-        telephonyManager.listen(phoneStateListener,
-                PhoneStateListener.LISTEN_CALL_STATE);
+        if (telephonyManager != null) {
+            telephonyManager.listen(phoneStateListener,
+                    PhoneStateListener.LISTEN_CALL_STATE);
+        }
     }
 }

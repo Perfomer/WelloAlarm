@@ -20,7 +20,7 @@
     <string name="stn_save_alarm">Сохранить</string>
     <string name="stn_quit_without_saving">Выйти</string>
 
-    <string name="stn_note_once">Чтобы будильник сработал единожды, не выбирайте дни недели.</string>
+    <string name="stn_note_once">Чтобы будильник сработал только один раз, не выбирайте дни недели.</string>
     <string name="stn_note_noweek">Если не выбрать неделю, то будильник будет срабатывать каждую неделю.</string>
 
     <string name="stn_create">Сохранить</string>

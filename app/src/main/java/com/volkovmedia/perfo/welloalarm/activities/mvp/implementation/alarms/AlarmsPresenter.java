@@ -1,9 +1,6 @@
 package com.volkovmedia.perfo.welloalarm.activities.mvp.implementation.alarms;
 
-import android.content.Context;
-
-import com.volkovmedia.perfo.welloalarm.activities.mvp._abstract.MvpPresenter;
-import com.volkovmedia.perfo.welloalarm.activities.mvp._abstract.MvpView;
+import com.volkovmedia.perfo.welloalarm.activities.mvp._abstract.base.BasePresenter;
 import com.volkovmedia.perfo.welloalarm.general.UniqueList;
 import com.volkovmedia.perfo.welloalarm.general.WelloApplication;
 import com.volkovmedia.perfo.welloalarm.logic.WelloAlarmManager;
@@ -11,12 +8,9 @@ import com.volkovmedia.perfo.welloalarm.objects.Alarm;
 
 import javax.inject.Inject;
 
-public class AlarmsPresenter implements AlarmsContract.Presenter {
+public class AlarmsPresenter extends BasePresenter<AlarmsContract.View, AlarmsModel> {
 
-    private AlarmsContract.View mView;
-
-    @Inject
-    AlarmsModel mModel;
+    //TODO allow cancel editing
 
     @Inject
     WelloAlarmManager mAlarmManager;
@@ -24,24 +18,14 @@ public class AlarmsPresenter implements AlarmsContract.Presenter {
     private boolean mAlarmsScheduled;
 
     public AlarmsPresenter() {
-        WelloApplication.getComponent().inject(this);
-    }
-
-    @Override
-    public void attachView(MvpView view) {
-        this.mView = (AlarmsContract.View) view;
-    }
-
-    @Override
-    public void detachView() {
-        this.mView = null;
+        super(WelloApplication.getComponent().getAlarmsModel());
+        mAlarmManager = WelloApplication.getComponent().getAlarmManager();
     }
 
     @Override
     public void viewIsReady() {
-        mModel.loadAlarms(alarms -> {
-            mModel.setAlarms(alarms);
-            updateAlarmsLayout(alarms);
+        getModel().loadAlarms(false, alarms -> {
+            showAlarmsLayout(alarms);
 
             if (!mAlarmsScheduled) {
                 mAlarmsScheduled = mAlarmManager.scheduleNearestAlarm(alarms);
@@ -49,38 +33,53 @@ public class AlarmsPresenter implements AlarmsContract.Presenter {
         });
     }
 
-    private void updateAlarmsLayout(UniqueList<Alarm> alarms) {
-        boolean noAlarmsViewVisible = mView.isNoAlarmsViewVisible();
+    private void showAlarms(UniqueList<Alarm> alarms) {
+        switchAlarmsLayout(alarms, () -> getView().showAlarms(alarms));
+    }
+
+    private void showAlarmsLayout(UniqueList<Alarm> alarms) {
+        switchAlarmsLayout(alarms, () -> getView().showAlarmsViews());
+    }
+
+    private void switchAlarmsLayout(UniqueList<Alarm> alarms, AlarmsLayoutUpdater action) {
+        boolean noAlarmsViewVisible = getView().isNoAlarmsViewVisible();
 
         if (alarms.size() == 0) {
-            if (!noAlarmsViewVisible)
-                mView.showNoAlarmsLayout();
-        }
-        else if (noAlarmsViewVisible)
-            mView.showAlarms(alarms);
+            if (!noAlarmsViewVisible) getView().showNoAlarmsLayout();
+        } else if (noAlarmsViewVisible) action.onViewUpdate();
     }
 
-    @Override
+    private void onAlarmsUpdated(UniqueList<Alarm> alarms) {
+        mAlarmManager.scheduleNearestAlarm(alarms);
+        showAlarms(alarms);
+    }
+
+    public void onInterfaceUpdateAsked() {
+        getModel().loadAlarms(true, alarms -> getView().showAlarms(alarms));
+    }
+
     public void editAlarm(Alarm alarm, boolean withCallback) {
-        mModel.saveAlarm(alarm, true, position -> {
-            if (withCallback) mView.onAlarmEdited(alarm, position);
-            mModel.loadAlarms(mAlarmManager::scheduleNearestAlarm);
+        getModel().saveAlarm(alarm, true, position -> {
+            if (withCallback) getView().onAlarmEdited(alarm, position);
+            getModel().loadAlarms(false, mAlarmManager::scheduleNearestAlarm);
         });
     }
 
-    @Override
     public void addAlarm(Alarm alarm) {
-        mModel.saveAlarm(alarm, false, (position) -> {
-            mView.onAlarmAdded(alarm, position);
-            mModel.loadAlarms(this::updateAlarmsLayout);
+        getModel().saveAlarm(alarm, false, (position) -> {
+            getView().onAlarmAdded(alarm, position);
+            getModel().loadAlarms(false, this::onAlarmsUpdated);
         });
     }
 
-    @Override
     public void deleteAlarm(Alarm alarm) {
-        mModel.deleteAlarm(alarm, (position) -> {
-            mView.onAlarmDeleted(alarm, position);
-            mModel.loadAlarms(this::updateAlarmsLayout);
+        getModel().deleteAlarm(alarm, (position) -> {
+            getView().onAlarmDeleted(alarm, position);
+            getModel().loadAlarms(false, this::onAlarmsUpdated);
         });
+    }
+
+    private interface AlarmsLayoutUpdater {
+        void onViewUpdate();
     }
 }

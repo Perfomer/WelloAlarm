@@ -9,7 +9,7 @@ public class SaveAlarmTask extends DeleteAlarmTask {
 
     private final boolean mUpdate;
 
-    public SaveAlarmTask(AlarmDatabaseHelper database, UniqueList<Alarm> dataSource, DatabaseTaskCallback<Integer> callback, boolean update) {
+    public SaveAlarmTask(AlarmDatabaseHelper database, UniqueList<Alarm> dataSource, boolean update, DatabaseTaskCallback<Integer> callback) {
         super(database, dataSource, callback);
         this.mUpdate = update;
     }
@@ -19,11 +19,14 @@ public class SaveAlarmTask extends DeleteAlarmTask {
         Alarm alarm = params[0];
         UniqueList<Alarm> alarms = getSource();
 
-        int newId = getDatabase().saveAlarm(alarm);
-        alarm.setId(newId);
+        int id = getDatabase().saveAlarm(alarm);
 
-        if (mUpdate) alarms.update(alarm);
-        else alarms.add(alarm);
+        if (mUpdate) {
+            alarms.update(alarm);
+        } else {
+            alarm.setId(id);
+            alarms.add(alarm);
+        }
 
         return alarms.getPositionByKey(alarm.getId());
     }

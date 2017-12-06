@@ -89,7 +89,6 @@ public class TimeManager {
             if (hoursCount > 0) hoursCount--;
         }
 
-
         secondsCount = SECONDS_IN_MINUTE - currentSecond;
         if (secondsCount > SECONDS_IN_MINUTE) {
             secondsCount -= SECONDS_IN_MINUTE;
@@ -124,8 +123,8 @@ public class TimeManager {
     private static long castToMillis(int days, int hours, int minutes, int seconds) {
         return (long) (days * HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE * MILLISECONDS_IN_SECOND +
                 hours * MINUTES_IN_HOUR * SECONDS_IN_MINUTE * MILLISECONDS_IN_SECOND +
-                minutes * SECONDS_IN_MINUTE * MILLISECONDS_IN_SECOND) +
-                seconds * MILLISECONDS_IN_SECOND;
+                minutes * SECONDS_IN_MINUTE * MILLISECONDS_IN_SECOND +
+                seconds * MILLISECONDS_IN_SECOND);
     }
 
     public static int getNextDay(int currentDay) {

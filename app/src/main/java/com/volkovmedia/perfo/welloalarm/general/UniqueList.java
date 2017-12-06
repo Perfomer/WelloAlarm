@@ -7,6 +7,8 @@ import java.util.HashSet;
 
 public class UniqueList<T extends DataContainer> {
 
+    //TODO implement List
+
     private ArrayList<T> mList;
     private HashSet<Integer> mKeys;
 
@@ -30,8 +32,11 @@ public class UniqueList<T extends DataContainer> {
     }
 
     public void update(T item) {
-        mList.remove(getByKey(item.getId()));
-        mList.add(item);
+        int id = item.getId(),
+                position = getPositionByKey(id);
+
+        mList.remove(getByKey(id));
+        mList.add(position, item);
     }
 
     public void remove(T item) {
@@ -63,6 +68,13 @@ public class UniqueList<T extends DataContainer> {
         }
 
         return -1;
+    }
+
+    @SafeVarargs
+    public final void add(T... items) {
+        for (T item : items) {
+            add(item);
+        }
     }
 
     public boolean contains(int key) {
