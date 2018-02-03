@@ -1,4 +1,4 @@
-# WelloAlarm-2017
+# Wello Alarm (2017)
 **Alarm app for Android OS. Perfect for students with 2-weeks graphic.**
 
 Today, most Russian universities have a 2-week timetable. Ordinary alarm clocks can not work with such a schedule so that you do not have to switch it every time.
